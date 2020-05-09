@@ -5,9 +5,10 @@ version: 2
 
 jobs:
   build:
-    docker:
+    # docker:
+    machine: true
       # specify the version
-      - image: circleci/golang:1.9
+      # - image: circleci/golang:1.9
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -40,8 +41,8 @@ jobs:
             go get -u github.com/gomodule/redigo/redis
             go get -u github.com/rs/zerolog/log
             go get -u github.com/rs/zerolog
-      - setup_remote_docker:
-            docker_layer_caching: true
+      # - setup_remote_docker:
+            # docker_layer_caching: true
       - run:
           name: Build and push Docker images
           command: |
