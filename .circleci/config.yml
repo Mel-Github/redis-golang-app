@@ -40,7 +40,7 @@ jobs:
             docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
       - run:
           name: Update Github deployment 
-          commands: |
+          command: |
             sed -i "s/{CIRCLECI_TAG}/${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}/g" ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
             cat ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
 
