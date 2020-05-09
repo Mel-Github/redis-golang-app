@@ -42,7 +42,8 @@ jobs:
           name: Build and push Docker images
           command: |
             docker build -t ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM} .
-            docker images melcheng/redis-golang-app:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM} 
+            docker images  
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
 
 
     ####  - run: go test -v ./...
