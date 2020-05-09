@@ -22,5 +22,11 @@ jobs:
       - checkout
 
       # specify any bash command here prefixed with `run: `
-      - run: go get -v -t -d ./...
-      - run: go test -v ./...
+      - run: 
+          name: Get all dependencies
+          command: |
+            go get -v -t -d ./...
+            go get -u github.com/gomodule/redigo/redis
+            go get -u github.com/rs/zerolog/log
+            go get -u github.com/rs/zerolog
+    ###  - run: go test -v ./...
