@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -18,10 +17,6 @@ import (
 var counter int
 var mutex = &sync.Mutex{}
 
-func echoString(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "hello")
-}
-
 func incrementCounter() int {
 	mutex.Lock()
 
@@ -35,7 +30,7 @@ func incrementCounter() int {
 
 func redisIncrement() int {
 
-	conn, err := redis.Dial("tcp", "localhost:6379")
+	conn, err := redis.Dial("tcp", "redis-node:6379")
 	if err != nil {
 		log.Fatal().Err(err).Msg("Unable to connect to redis")
 	}
@@ -73,12 +68,13 @@ func main() {
 
 	wd, err := os.Getwd()
 	if err != nil {
-		log.Fatal().Err(err).Msg("Error retrieving workspace")
+		log.Fatal().Err(err).Msg("Error retrieving current directory")
 	}
 
-	//log.Info().Str("path", wd).Msg("Template path")
+	log.Info().Str("OS pwd Path", wd).Msg("Template path")
 
-	t, err := template.ParseFiles(filepath.Join(wd, "./static/index.html"))
+	//t, err := template.ParseFiles(filepath.Join(wd, "./static/index.html"))
+	t, err := template.ParseFiles(filepath.Join("static", "index.html"))
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error retrieving workspace")
 	}

@@ -21,8 +21,8 @@ jobs:
     steps:
       - checkout
       - run: # print the name of the branch we're on
-              name: "What is the repo name?"
-              command: echo ${REPO_NAME}
+          name: "What is the CIRCLE_BUILD_NUM?"
+          command: echo ${CIRCLE_BUILD_NUM}
       # specify any bash command here prefixed with `run: `
       - run: 
           name: Get all dependencies
