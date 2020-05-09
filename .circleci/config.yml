@@ -43,5 +43,5 @@ jobs:
           command: |
             sed -i "s/{CIRCLECI_TAG}/${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}/g" ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
             cat ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
-
+            git version
     ####  - run: go test -v ./...
