@@ -30,7 +30,6 @@ jobs:
       - run: # retrieve environment variable
           name: "Print ORG_NAME variable"
           command: echo $ORG_NAME
-      - run: #
       # specify any bash command here prefixed with `run: `
       - run: 
           name: Get all dependencies
