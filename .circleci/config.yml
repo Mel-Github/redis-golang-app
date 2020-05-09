@@ -20,7 +20,9 @@ jobs:
     working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
     steps:
       - checkout
-
+      - run: # print the name of the branch we're on
+              name: "What is the repo name?"
+              command: echo ${REPO_NAME}
       # specify any bash command here prefixed with `run: `
       - run: 
           name: Get all dependencies
