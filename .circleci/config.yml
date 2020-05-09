@@ -25,8 +25,8 @@ jobs:
           name: "Current working directory"
           command: echo ${CIRCLE_WORKING_DIRECTORY}
       - run: # retrieve environment variable
-          name: "Print ORG_NAME variable"
-          command: echo $ORG_NAME
+          name: "Print CIRCLE_PROJECT_REPONAME variable"
+          command: echo ${CIRCLE_PROJECT_REPONAME}
       # specify any bash command here prefixed with `run: `
       - run: 
           name: Get all dependencies
@@ -42,6 +42,5 @@ jobs:
           command: |
             docker build -t ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:v0.1${CIRCLE_BUILD_NUM} .
             docker images
-
 
     ####  - run: go test -v ./...
