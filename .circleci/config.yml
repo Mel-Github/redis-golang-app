@@ -17,6 +17,7 @@ jobs:
     environment:
       DOCKER_USER: melcheng  
       STABLE_RELEASE: v0.1
+      GIT_BRANCH: circleci_project_setup
     steps:
       - checkout
       - run: # print the name of the branch we're on
@@ -44,4 +45,8 @@ jobs:
             sed -i "s/{CIRCLECI_TAG}/${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}/g" ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
             cat ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
             git version
+            git add .
+            git commit -m "Update via CircleCI"
+            # Push quietly to prevent showing the token in log
+            git push -q https://${GITHUB_TOKEN}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git ${GIT_BRANCH}
     ####  - run: go test -v ./...
