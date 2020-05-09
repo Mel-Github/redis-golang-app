@@ -19,6 +19,8 @@ jobs:
     ####   /go/src/github.com/circleci/go-tool
     ####   /go/src/bitbucket.org/circleci/go-tool
     working_directory: /go/src/github.com/Mel-GitHub/redis-golang-app
+    environment:
+      DOCKER_USER: melcheng  
     steps:
       - checkout
       - run: # print the name of the branch we're on
@@ -43,6 +45,8 @@ jobs:
       - run:
           name: Build and push Docker images
           command: |
-            docker version
+            docker build -t ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:v0.1${CIRCLE_BUILD_NUM} .
+            docker images
+
 
     ####  - run: go test -v ./...
