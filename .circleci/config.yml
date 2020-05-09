@@ -2,6 +2,7 @@
 #
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
+
 jobs:
   build:
     docker:
@@ -23,6 +24,13 @@ jobs:
       - run: # print the name of the branch we're on
           name: "What is the CIRCLE_BUILD_NUM?"
           command: echo ${CIRCLE_BUILD_NUM}
+      - run: # retrieve current working directory
+          name: "Current working directory"
+          command: echo ${CIRCLE_WORKING_DIRECTORY}
+      - run: # retrieve environment variable
+          name: "Print ORG_NAME variable"
+          command: echo $ORG_NAME
+      - run: #
       # specify any bash command here prefixed with `run: `
       - run: 
           name: Get all dependencies
@@ -31,4 +39,11 @@ jobs:
             go get -u github.com/gomodule/redigo/redis
             go get -u github.com/rs/zerolog/log
             go get -u github.com/rs/zerolog
+      - setup_remote_docker:
+            docker_layer_caching: true
+      - run:
+          name: Build and push Docker images
+          command: |
+            docker version
+
     ####  - run: go test -v ./...
