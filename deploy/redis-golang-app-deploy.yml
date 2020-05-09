@@ -15,7 +15,7 @@ spec:
         app: redis-golang
     spec:
       containers:
-        - image: melcheng/redis-golang-app:v0.1.45
+        - image: melcheng/redis-golang-app:v0.1.46
           name: redis-golang
           ports:
             - containerPort: 8081
