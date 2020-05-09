@@ -45,6 +45,8 @@ jobs:
             sed -i "s/{CIRCLECI_TAG}/${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}/g" ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
             cat ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
             git version
+            git config --global user.email "bot@circleci.com"
+            git config --global user.name "Deployment Bot"
             git add .
             git commit -m "Update via CircleCI"
             # Push quietly to prevent showing the token in log
