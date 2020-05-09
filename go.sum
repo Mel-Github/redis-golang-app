@@ -3,6 +3,8 @@ github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSs
 github.com/gomodule/redigo v1.8.1 h1:Abmo0bI7Xf0IhdIPc7HZQzZcShdnmxeoVuDDtIQp8N8=
 github.com/gomodule/redigo v1.8.1/go.mod h1:P9dn9mFrCBvWhGE1wpxx6fgq7BAeLBk+UUUzlpkBYO0=
 github.com/gomodule/redigo/redis v0.0.0-do-not-use h1:J7XIp6Kau0WoyT4JtXHT3Ei0gA1KkSc6bc87j9v9WIo=
+github.com/mel-github/redis-golang-app v0.0.0-20200509100317-024cd2c3b9ff h1:Wj9Ybi2yhHuFFpWSdKngbmAPRT13Vjcxb2YOpC1GKAA=
+github.com/mel-github/redis-golang-app v0.0.0-20200509100317-024cd2c3b9ff/go.mod h1:GBLuYQvAKk/XS06F/Mozuq3L23X+AomF96ZzbOkPYYc=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/rs/xid v1.2.1/go.mod h1:+uKXf+4Djp6Md1KODXJxgGQPKngRmWyn10oCKFzNHOQ=
