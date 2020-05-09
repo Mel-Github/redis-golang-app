@@ -27,7 +27,7 @@ jobs:
           command: echo ${CIRCLE_WORKING_DIRECTORY}
       - run: # retrieve environment variable
           name: "Print CIRCLE_PROJECT_REPONAME variable"
-          command: echo ${CIRCLE_PROJECT_REPONAME}
+          command: echo $CIRCLE_PROJECT_REPONAME
       # specify any bash command here prefixed with `run: `
       - run: 
           name: Get all dependencies
