@@ -1,0 +1,22 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-golang
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: redis-golang
+  template:
+    metadata:
+      labels:
+        app: redis-golang
+    spec:
+      containers:
+        - image: melcheng/redis-golang-app:v{CIRCLECI_TAG}
+          name: redis-golang
+          ports:
+            - containerPort: 8081
+          imagePullPolicy: Always
