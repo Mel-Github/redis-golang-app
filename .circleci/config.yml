@@ -22,13 +22,6 @@ jobs:
       - run: # print the name of the branch we're on
           name: "What is the CIRCLE_BUILD_NUM?"
           command: echo ${CIRCLE_BUILD_NUM}
-      - run: # retrieve current working directory
-          name: "Current working directory"
-          command: echo ${CIRCLE_WORKING_DIRECTORY}
-      - run: # retrieve environment variable
-          name: "Print CIRCLE_PROJECT_REPONAME variable"
-          command: echo $CIRCLE_PROJECT_REPONAME
-      # specify any bash command here prefixed with `run: `
       - run: 
           name: Get all dependencies
           command: |
@@ -44,6 +37,7 @@ jobs:
             docker build -t ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM} .
             docker images  
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+            docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
 
 
     ####  - run: go test -v ./...
