@@ -3,9 +3,10 @@
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2.0
 
+experimental:
+  pipelines: true
+
 jobs:
-  experimental:
-    pipelines: true
   build:
     filters:
       branches:
@@ -106,8 +107,7 @@ jobs:
           name: Update Github deployment 
           command: |
             ### sed -i "s/${STABLE_RELEASE}.${CIRCLE_PREVIOUS_BUILD_NUM}/${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}/g" ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
-            # sed -i "s/v[0-9]*\.[0-9]*\.[0-9]*/${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}/g" ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
-            sed -i "s/v[0-9]*\.[0-9]*\.[0-9]*/${STABLE_RELEASE}.<< pipeline.number >>/g" ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
+            sed -i "s/v[0-9]*\.[0-9]*\.[0-9]*/${STABLE_RELEASE}.${CIRCLE_PREVIOUS_BUILD_NUM}/g" ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
             cat ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
             git version
 
