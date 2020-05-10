@@ -43,11 +43,11 @@ jobs:
           name: Build Docker Images
           command: |
           #  docker build -t ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM} .
-            docker build -t ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.<< pipeline.number >> .
+            docker build -t ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}."<< pipeline.number >>" .
             docker images  
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
           #  docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
-            docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.<< pipeline.number >>
+            docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}."<< pipeline.number >>"
 
 
   # push:
