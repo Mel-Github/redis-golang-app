@@ -67,6 +67,7 @@ jobs:
       - run:
           name: Push Docker image
           command: |
+            docker images ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
             docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
 
