@@ -31,7 +31,7 @@ func incrementCounter() int {
 func redisIncrement() int {
 
 	conn, err := redis.Dial("tcp", "redis-node:6379")
-	//conn, err := redis.Dial("tcp", "localhost6379")
+	//conn, err := redis.Dial("tcp", "localhost:6379")
 	if err != nil {
 		log.Fatal().Err(err).Msg("Unable to connect to redis")
 	}
@@ -43,7 +43,7 @@ func redisIncrement() int {
 	previous, err := redis.Int(conn.Do("GET", "mycounter"))
 	//reply, err := redis.StringMap(conn.Do("GET", "mycounter"))
 	if err != nil {
-		log.Fatal().Err(err).Msg("Error retrieving album")
+		log.Fatal().Err(err).Msg("Error retrieving redis counter")
 	}
 
 	log.Info().Str("Before increment current counter value", strconv.Itoa(previous)).Msg("Previous value")
@@ -59,7 +59,7 @@ func redisIncrement() int {
 	reply, err := redis.Int(conn.Do("GET", "mycounter"))
 	//reply, err := redis.StringMap(conn.Do("GET", "mycounter"))
 	if err != nil {
-		log.Fatal().Err(err).Msg("Error retrieving album")
+		log.Fatal().Err(err).Msg("Error retrieving redis counter")
 	}
 
 	log.Info().Str("Current counter value", strconv.Itoa(reply)).Msg("Current value")
@@ -76,6 +76,22 @@ func main() {
 
 	log.Info().Msg("main started")
 
+	http.HandleFunc("/", MainPage)
+	http.HandleFunc("/health", Health)
+
+	if err := http.ListenAndServe(":8081", nil); err != nil {
+		log.Fatal().Err(err).Msg("Startup failed")
+	}
+
+}
+
+func Health(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	io.WriteString(w, `{"alive": true}`)
+}
+
+func MainPage(w http.ResponseWriter, r *http.Request) {
 	wd, err := os.Getwd()
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error retrieving current directory")
@@ -94,29 +110,17 @@ func main() {
 
 	tmpl := template.Must(t, nil)
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		log.Print("Enter handler")
+	//http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	log.Print("Enter handler")
 
-		visitorcounter := incrementCounter()
+	//visitorcounter := incrementCounter()
+	visitorcounter := redisIncrement()
 
-		log.Print("Inside handler after increment before template execution")
-		myvar := map[string]interface{}{
-			"MyVar": visitorcounter,
-		}
-		tmpl.Execute(w, myvar)
-		log.Print("Inside handler after template execution")
-	})
-
-	// Simple health check to integration with Kubernetes
-	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Header().Set("Content-Type", "application/json")
-		io.WriteString(w, `{"alive": true}`)
-	})
-
-	// log.Fatal(http.ListenAndServe(":8081", nil))
-	if err := http.ListenAndServe(":8081", nil); err != nil {
-		log.Fatal().Err(err).Msg("Startup failed")
+	log.Print("Inside handler after increment before template execution")
+	myvar := map[string]interface{}{
+		"MyVar": visitorcounter,
 	}
-
+	tmpl.Execute(w, myvar)
+	log.Print("Inside handler after template execution")
+	//	})
 }
