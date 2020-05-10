@@ -60,6 +60,6 @@ jobs:
             # Push quietly to prevent showing the token in log
             echo " git branch --set-upstream-to origin/${RELEASE_BRANCH} ${CIRCLE_BRANCH}"
             git branch --set-upstream-to origin/${RELEASE_BRANCH} ${CIRCLE_BRANCH}
-            git push
+            git push -f origin HEAD:${RELEASE_BRANCH}
             #git push -f -q https://${GITHUB_TOKEN}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git origin ${CIRCLE_BRANCH}:${RELEASE_BRANCH}
     ####  - run: go test -v ./...
