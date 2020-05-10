@@ -58,5 +58,6 @@ jobs:
             git add .
             git commit -m "Update via CircleCI BOT ${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}"
             # Push quietly to prevent showing the token in log
+            git branch --set-upstream-to origin/${RELEASE_BRANCH} ${CIRCLE_BRANCH}
             git push -f -q https://${GITHUB_TOKEN}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git origin ${CIRCLE_BRANCH}:${RELEASE_BRANCH}
     ####  - run: go test -v ./...
