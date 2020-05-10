@@ -119,7 +119,7 @@ workflows:
           context: DOCKERHUB
           filters:
             branches:
-      #         only: circleci-project-setup        
+              only: circleci-project-setup        
       # - push:
       #     context: DOCKERHUB 
       #     requires:
