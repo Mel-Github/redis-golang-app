@@ -83,12 +83,18 @@ jobs:
   #           echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
   #           docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
   test:
+    docker:
+      # specify the version
+      - image: alpine:3.4
     steps:
       - run:
           name: Performing Testing
           command: |
             echo "Invoke automated testing here"
   container-scan:
+    docker:
+      # specify the version
+      - image: alpine:3.4
     steps:
       - run:
           name: Container Scan Testing
@@ -158,7 +164,7 @@ workflows:
       - git_update:
           context: DOCKERHUB
           requires:
-            - build
+            - container-scan
           filters:
             branches:
               only: circleci-project-setup
