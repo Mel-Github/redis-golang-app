@@ -76,7 +76,7 @@ func main() {
 
 	log.Info().Msg("main started")
 
-	http.HandleFunc("/", MainPage)
+	http.HandleFunc("/home", MainPage)
 	http.HandleFunc("/health", Health)
 
 	if err := http.ListenAndServe(":8081", nil); err != nil {
