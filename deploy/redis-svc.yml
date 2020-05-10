@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-node
+  labels:
+    app: redis-node
+spec:
+  ports:
+    - port: 6379
+      name: redis-node
+      targetPort: 6379
+      protocol: TCP
+  selector:
+    app: redis-node
