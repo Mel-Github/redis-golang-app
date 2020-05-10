@@ -27,6 +27,9 @@ jobs:
       - run: # print the name of the branch we're on
           name: "What is the CIRCLE_BUILD_NUM?"
           command: echo ${CIRCLE_BUILD_NUM}
+      - run: # print the name of the branch we're on
+          name: "What is the pipeline number?"
+          command: echo << pipeline.number >>
       - run: 
           name: Get all dependencies
           command: |
@@ -39,10 +42,12 @@ jobs:
       - run:
           name: Build Docker Images
           command: |
-            docker build -t ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM} .
+          #  docker build -t ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM} .
+            docker build -t ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.<< pipeline.number >> .
             docker images  
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-            docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
+          #  docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
+            docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.<< pipeline.number >>
 
 
   # push:
@@ -97,14 +102,15 @@ jobs:
           name: Update Github deployment 
           command: |
             ### sed -i "s/${STABLE_RELEASE}.${CIRCLE_PREVIOUS_BUILD_NUM}/${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}/g" ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
-            sed -i "s/v[0-9]*\.[0-9]*\.[0-9]*/${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}/g" ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
+            # sed -i "s/v[0-9]*\.[0-9]*\.[0-9]*/${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}/g" ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
+            sed -i "s/v[0-9]*\.[0-9]*\.[0-9]*/${STABLE_RELEASE}.<< pipeline.number >>/g" ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
             cat ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
             git version
 
             git config --global user.email "bot@circleci.com"
             git config --global user.name "Deployment Bot"
             git add .
-            git commit -m "Update via CircleCI BOT ${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}"
+            git commit -m "Update via CircleCI BOT ${STABLE_RELEASE}.<< pipeline.number >>"
 
             # Push quietly to prevent showing the token in log
             echo " git branch --set-upstream-to origin/${RELEASE_BRANCH} ${CIRCLE_BRANCH}"
