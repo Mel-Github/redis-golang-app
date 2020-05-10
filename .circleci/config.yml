@@ -56,7 +56,7 @@ jobs:
             git config --global user.email "bot@circleci.com"
             git config --global user.name "Deployment Bot"
             git add .
-            git commit -m "Update via CircleCI"
+            git commit -m "Update via CircleCI BOT ${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}"
             # Push quietly to prevent showing the token in log
             git push -f -q https://${GITHUB_TOKEN}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git origin ${CIRCLE_BRANCH}:${RELEASE_BRANCH}
     ####  - run: go test -v ./...
