@@ -17,6 +17,7 @@ jobs:
     environment:
       DOCKER_USER: melcheng  
       STABLE_RELEASE: v0.1
+      RELEASE_BRANCH: release-candidate
     steps:
       - checkout
       - run: # print the name of the branch we're on
@@ -45,10 +46,17 @@ jobs:
             sed -i "s/v[0-9]*\.[0-9]*\.[0-9]*/${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}/g" ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
             cat ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
             git version
+
+            ### We need to commit to another branch to prevent CircleCi to go into infintite loop
+            ###  git checkout -b branch_name
+            ### https://stackoverflow.com/questions/45080223/push-to-another-branch-with-git
+            ### git push origin remote_branch_name
+
+
             git config --global user.email "bot@circleci.com"
             git config --global user.name "Deployment Bot"
             git add .
             git commit -m "Update via CircleCI"
             # Push quietly to prevent showing the token in log
-            git push -q https://${GITHUB_TOKEN}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git ${CIRCLE_BRANCH}
+            git push -f -q https://${GITHUB_TOKEN}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git origin ${CIRCLE_BRANCH}:${RELEASE_BRANCH}
     ####  - run: go test -v ./...
