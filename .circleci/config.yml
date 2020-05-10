@@ -82,7 +82,18 @@ jobs:
   #           docker images ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
   #           echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
   #           docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
-
+  test:
+    steps:
+      - run:
+          name: Performing Testing
+          command: |
+            echo "Invoke automated testing here"
+  container-scan:
+    steps:
+      - run:
+          name: Container Scan Testing
+          command: |
+            echo "Invoke container scanning here"
   git_update:
     filters:
       branches:
@@ -130,13 +141,20 @@ workflows:
           filters:
             branches:
               only: circleci-project-setup        
-      # - push:
-      #     context: DOCKERHUB 
-      #     requires:
-      #       - build
-      #     filters:
-      #       branches:
-      #         only: circleci-project-setup
+      - test:
+          context: DOCKERHUB 
+          requires:
+            - build
+          filters:
+            branches:
+              only: circleci-project-setup
+      - container-scan:
+          context: DOCKERHUB 
+          requires:
+            - test
+          filters:
+            branches:
+              only: circleci-project-setup
       - git_update:
           context: DOCKERHUB
           requires:
