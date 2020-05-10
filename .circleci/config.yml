@@ -41,35 +41,37 @@ jobs:
           command: |
             docker build -t ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM} .
             docker images  
-
-
-  push:
-    filters:
-      branches:
-        only:
-          - circleci-project-setup
-    docker:
-      # specify the version
-      - image: circleci/golang:1.9
-
-    #### TEMPLATE_NOTE: go expects specific checkout path representing url
-    #### expecting it in the form of
-    ####   /go/src/github.com/circleci/go-tool
-    ####   /go/src/bitbucket.org/circleci/go-tool
-    working_directory: /go/src/github.com/Mel-GitHub/redis-golang-app
-    environment:
-      DOCKER_USER: melcheng  
-      STABLE_RELEASE: v0.1
-      RELEASE_BRANCH: release-candidate
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: Push Docker image
-          command: |
-            docker images ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
             docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
+
+
+  # push:
+  #   filters:
+  #     branches:
+  #       only:
+  #         - circleci-project-setup
+  #   docker:
+  #     # specify the version
+  #     - image: circleci/golang:1.9
+
+  #   #### TEMPLATE_NOTE: go expects specific checkout path representing url
+  #   #### expecting it in the form of
+  #   ####   /go/src/github.com/circleci/go-tool
+  #   ####   /go/src/bitbucket.org/circleci/go-tool
+  #   working_directory: /go/src/github.com/Mel-GitHub/redis-golang-app
+  #   environment:
+  #     DOCKER_USER: melcheng  
+  #     STABLE_RELEASE: v0.1
+  #     RELEASE_BRANCH: release-candidate
+  #   steps:
+  #     - checkout
+  #     - setup_remote_docker
+  #     - run:
+  #         name: Push Docker image
+  #         command: |
+  #           docker images ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
+  #           echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+  #           docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
 
   git_update:
     filters:
@@ -117,18 +119,18 @@ workflows:
           context: DOCKERHUB
           filters:
             branches:
-              only: circleci-project-setup        
-      - push:
-          context: DOCKERHUB 
-          requires:
-            - build
-          filters:
-            branches:
-              only: circleci-project-setup
+      #         only: circleci-project-setup        
+      # - push:
+      #     context: DOCKERHUB 
+      #     requires:
+      #       - build
+      #     filters:
+      #       branches:
+      #         only: circleci-project-setup
       - git_update:
           context: DOCKERHUB
           requires:
-            - push
+            - build
           filters:
             branches:
               only: circleci-project-setup
