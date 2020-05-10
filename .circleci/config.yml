@@ -5,6 +5,10 @@ version: 2
 
 jobs:
   build:
+    filters:
+      branches:
+        only:
+          - circleci-project-setup
     docker:
       # specify the version
       - image: circleci/golang:1.9
@@ -47,19 +51,15 @@ jobs:
             cat ${CIRCLE_WORKING_DIRECTORY}/deploy/redis-golang-app-deploy.yml
             git version
 
-            ### We need to commit to another branch to prevent CircleCi to go into infintite loop
-            ###  git checkout -b branch_name
-            ### https://stackoverflow.com/questions/45080223/push-to-another-branch-with-git
-            ### git push origin remote_branch_name
-
-
             git config --global user.email "bot@circleci.com"
             git config --global user.name "Deployment Bot"
             git add .
             git commit -m "Update via CircleCI BOT ${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}"
+            
             # Push quietly to prevent showing the token in log
             echo " git branch --set-upstream-to origin/${RELEASE_BRANCH} ${CIRCLE_BRANCH}"
             git branch --set-upstream-to origin/${RELEASE_BRANCH} ${CIRCLE_BRANCH}
             git push -f origin HEAD:${RELEASE_BRANCH}
+
             #git push -f -q https://${GITHUB_TOKEN}@github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git origin ${CIRCLE_BRANCH}:${RELEASE_BRANCH}
     ####  - run: go test -v ./...
