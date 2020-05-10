@@ -22,6 +22,7 @@ jobs:
       DOCKER_USER: melcheng  
       STABLE_RELEASE: v0.1
       RELEASE_BRANCH: release-candidate
+      MINOR_VERSION: << pipeline.number >>
     steps:
       - checkout
       - run: # print the name of the branch we're on
@@ -30,6 +31,9 @@ jobs:
       - run: # print the name of the branch we're on
           name: "What is the pipeline number?"
           command: echo << pipeline.number >>
+      - run: # print the name of the branch we're on
+          name: "What is the minor version?"
+          command: echo $MINOR_VERSION
       - run: 
           name: Get all dependencies
           command: |
@@ -42,13 +46,11 @@ jobs:
       - run:
           name: Build Docker Images
           command: |
-          #  docker build -t ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM} .
-            docker build -t "${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.<< pipeline.number >>" .
+            docker build -t ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM} .
             docker images  
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-          #  docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
-            docker push "${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.<< pipeline.number >>"
-
+            docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
+          
 
   # push:
   #   filters:
@@ -110,7 +112,7 @@ jobs:
             git config --global user.email "bot@circleci.com"
             git config --global user.name "Deployment Bot"
             git add .
-            git commit -m "Update via CircleCI BOT ${STABLE_RELEASE}.<< pipeline.number >>"
+            git commit -m "Update via CircleCI BOT ${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}"
 
             # Push quietly to prevent showing the token in log
             echo " git branch --set-upstream-to origin/${RELEASE_BRANCH} ${CIRCLE_BRANCH}"
