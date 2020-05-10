@@ -63,8 +63,9 @@ jobs:
       RELEASE_BRANCH: release-candidate
     steps:
       - checkout
+      - setup_remote_docker
       - run:
-          name: Push Dpcker image
+          name: Push Docker image
           command: |
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
             docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
