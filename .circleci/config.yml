@@ -30,7 +30,7 @@ jobs:
           command: echo ${CIRCLE_BUILD_NUM}
       - run: # print the name of the branch we're on
           name: "What is the pipeline number?"
-          command: echo << pipeline.number >>
+          command: echo "<< pipeline.number >>"
       - run: # print the name of the branch we're on
           name: "What is the minor version?"
           command: echo $MINOR_VERSION
