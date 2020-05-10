@@ -37,7 +37,7 @@ jobs:
       - setup_remote_docker
             # docker_layer_caching: true
       - run:
-          name: Build and push Docker images
+          name: Build Docker Images
           command: |
             docker build -t ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM} .
             docker images  
@@ -64,6 +64,8 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Push Dpcker image
+          commamd: |
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
             docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
 
