@@ -91,6 +91,15 @@ jobs:
           name: Performing Testing
           command: |
             echo "Invoke automated testing here"
+  integration_test:
+    docker:
+      # specify the version
+      - image: alpine:3.4
+    steps:
+      - run:
+          name: Performing Testing
+          command: |
+            echo "Invoke automated testing here"
   container-scan:
     docker:
       # specify the version
@@ -148,6 +157,7 @@ workflows:
             branches:
               only: circleci-project-setup        
       - test:
+      - integration_test:
           context: DOCKERHUB 
           requires:
             - build
@@ -157,6 +167,7 @@ workflows:
       - container-scan:
           context: DOCKERHUB 
           requires:
+            - integration_test
             - test
           filters:
             branches:

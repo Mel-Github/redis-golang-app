@@ -1,12 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
-	"sync"
 	"text/template"
 
 	"github.com/gomodule/redigo/redis"
@@ -15,18 +15,8 @@ import (
 )
 
 var counter int
-var mutex = &sync.Mutex{}
 
-func incrementCounter() int {
-	mutex.Lock()
-
-	//TODO write to redis
-	counter := redisIncrement()
-
-	log.Print("Counter stand " + strconv.Itoa(counter))
-	mutex.Unlock()
-	return counter
-}
+//var mutex = &sync.Mutex{}
 
 func redisIncrement() int {
 
@@ -40,13 +30,24 @@ func redisIncrement() int {
 	defer conn.Close()
 
 	// Retrieve Redis counter
-	previous, err := redis.Int(conn.Do("GET", "mycounter"))
-	//reply, err := redis.StringMap(conn.Do("GET", "mycounter"))
-	if err != nil {
-		log.Fatal().Err(err).Msg("Error retrieving redis counter")
-	}
+	key2, err := redis.Int(conn.Do("GET", "mycounter"))
 
-	log.Info().Str("Before increment current counter value", strconv.Itoa(previous)).Msg("Previous value")
+	// This use case happens when "mycounter" key dont exist inside redis
+	if err == redis.ErrNil {
+		fmt.Println("key2 does not exist")
+
+		// Create a new redis key named mycounter and set value to 0
+		_, err := conn.Do("SET", "mycounter", 0)
+		if err != nil {
+			log.Fatal().Err(err).Msg("Error creating redis key")
+		}
+		// This use case happens when key exist but we are encountered problem retrieving from redis
+	} else if err != nil {
+		log.Fatal().Err(err).Msg("Error retrieving redis key")
+		// Successfully retrieved redis key
+	} else {
+		log.Info().Str("mycounter value ", strconv.Itoa(key2)).Msg("Reusing existing key")
+	}
 
 	// Incrementing Redis counter
 	_, err = conn.Do("INCR", "mycounter")
@@ -61,9 +62,6 @@ func redisIncrement() int {
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error retrieving redis counter")
 	}
-
-	log.Info().Str("Current counter value", strconv.Itoa(reply)).Msg("Current value")
-
 	return reply
 
 }
@@ -76,7 +74,7 @@ func main() {
 
 	log.Info().Msg("main started")
 
-	http.HandleFunc("/home", MainPage)
+	http.HandleFunc("/home", Page)
 	http.HandleFunc("/health", Health)
 
 	if err := http.ListenAndServe(":8081", nil); err != nil {
@@ -85,13 +83,15 @@ func main() {
 
 }
 
+//Health check
 func Health(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	io.WriteString(w, `{"alive": true}`)
 }
 
-func MainPage(w http.ResponseWriter, r *http.Request) {
+//Page main page logic
+func Page(w http.ResponseWriter, r *http.Request) {
 	wd, err := os.Getwd()
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error retrieving current directory")
@@ -99,7 +99,6 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 
 	log.Info().Str("OS pwd Path", wd).Msg("Template path")
 
-	//t, err := template.ParseFiles(filepath.Join(wd, "./static/index.html"))
 	t, err := template.ParseFiles(filepath.Join("static", "index.html"))
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error retrieving workspace")
@@ -110,17 +109,10 @@ func MainPage(w http.ResponseWriter, r *http.Request) {
 
 	tmpl := template.Must(t, nil)
 
-	//http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-	log.Print("Enter handler")
-
-	//visitorcounter := incrementCounter()
+	// Execute go template
 	visitorcounter := redisIncrement()
-
-	log.Print("Inside handler after increment before template execution")
 	myvar := map[string]interface{}{
 		"MyVar": visitorcounter,
 	}
 	tmpl.Execute(w, myvar)
-	log.Print("Inside handler after template execution")
-	//	})
 }
