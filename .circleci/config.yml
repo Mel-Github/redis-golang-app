@@ -157,6 +157,12 @@ workflows:
             branches:
               only: circleci-project-setup        
       - test:
+          context: DOCKERHUB 
+          requires:
+            - build
+          filters:
+            branches:
+              only: circleci-project-setup
       - integration_test:
           context: DOCKERHUB 
           requires:
