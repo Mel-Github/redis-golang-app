@@ -46,7 +46,7 @@ jobs:
             go get -u github.com/rs/zerolog
       - setup_remote_docker
             # docker_layer_caching: true
-      - run: mkdir -p workspace
+      - run: mkdir -p workspace/docker_storage
 
       - run:
           name: Build Docker Images
