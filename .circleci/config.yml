@@ -92,12 +92,25 @@ jobs:
           at: /go/src/github.com/Mel-GitHub/redis-golang-app/workspace
       - setup_remote_docker
       - run:
-          name: Container Scan Testing
+          name:  Install trivy
           command: |
             ls -al
             docker load -i /go/src/github.com/Mel-GitHub/redis-golang-app/workspace/docker_storage/${CIRCLE_SHA1}.tar
             docker images 
-  
+            apk add --update-cache --upgrade curl rpm
+                  VERSION=$(
+                      curl --silent "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | \
+                      grep '"tag_name":' | \
+                      sed -E 's/.*"v([^"]+)".*/\1/'
+                  )
+            wget https://github.com/aquasecurity/trivy/releases/download/v${VERSION}/trivy_${VERSION}_Linux-64bit.tar.gz
+            tar zxvf trivy_${VERSION}_Linux-64bit.tar.gz
+            mv trivy /usr/local/bin
+      - run:
+          name: Scan the local image with trivy
+          command: trivy --exit-code 0 --no-progress trivy-ci-test:${CIRCLE_SHA1}
+
+          
       #     name: Install trivy
       #     command: |
       #       apk add --update-cache --upgrade curl rpm
