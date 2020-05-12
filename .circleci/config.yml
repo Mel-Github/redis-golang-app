@@ -36,7 +36,7 @@ jobs:
           command: echo "<< pipeline.number >>"
       - run: # print the name of the branch we're on
           name: "Export Build number"
-          command: echo 'export BUILD_NUMBER="${CIRCLE_BUILD_NUM}"' >> $BASH_ENV
+          command: echo "${CIRCLE_BUILD_NUM}"
       - run: 
           name: Get all dependencies
           command: |
@@ -86,7 +86,8 @@ jobs:
   container-scan:
     docker:
       # specify the version
-      - image: circleci/golang:1.9
+      # - image: circleci/golang:1.9
+      - image: docker:stable-git
     steps:
       - attach_workspace:
           at: /go/src/github.com/Mel-GitHub/redis-golang-app/workspace
@@ -94,7 +95,7 @@ jobs:
       - run:
           name:  Install trivy
           command: |
-            ls -al
+            # ls -al
             docker load -i /go/src/github.com/Mel-GitHub/redis-golang-app/workspace/docker_storage/${CIRCLE_SHA1}.tar
             docker images 
             apk add --update-cache --upgrade curl rpm
