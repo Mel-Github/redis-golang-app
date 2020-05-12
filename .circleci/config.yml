@@ -86,6 +86,7 @@ jobs:
   container-scan:
     environment:
       DOCKER_USER: melcheng  
+      STABLE_RELEASE: v0.1
     docker:
       # specify the version
       #- image: circleci/golang:1.9
