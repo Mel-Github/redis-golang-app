@@ -86,7 +86,7 @@ jobs:
   container-scan:
     docker:
       # specify the version
-      # - image: circleci/golang:1.9
+      #- image: circleci/golang:1.9
       - image: docker:stable-git
     steps:
       - attach_workspace:
@@ -109,7 +109,7 @@ jobs:
             mv trivy /usr/local/bin
       - run:
           name: Scan the local image with trivy
-          command: trivy --exit-code 0 --no-progress trivy-ci-test:${CIRCLE_SHA1}
+          command: trivy --exit-code 0 --no-progress ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_SHA1}
 
           
       #     name: Install trivy
