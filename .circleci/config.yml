@@ -84,6 +84,8 @@ jobs:
           command: |
             echo "Invoke automated testing here"
   container-scan:
+    environment:
+      DOCKER_USER: melcheng  
     docker:
       # specify the version
       #- image: circleci/golang:1.9
