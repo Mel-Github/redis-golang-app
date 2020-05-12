@@ -90,6 +90,7 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/workspace
+      - setup_remote_docker
       - run:
           name: Container Scan Testing
           command: |
