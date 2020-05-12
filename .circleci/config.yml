@@ -94,7 +94,7 @@ jobs:
       - run:
           name: Container Scan Testing
           command: |
-            docker load -i workspace/docker_storage
+            docker load -i /go/src/github.com/Mel-GitHub/redis-golang-app/workspace/docker_storage
             docker images 
   
       #     name: Install trivy
