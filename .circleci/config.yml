@@ -94,7 +94,7 @@ jobs:
       - run:
           name: Container Scan Testing
           command: |
-            docker load -i /tmp/workspace/docker_storage
+            docker load -i workspace/docker_storage
             docker images 
   
       #     name: Install trivy
