@@ -89,7 +89,7 @@ jobs:
       - image: circleci/golang:1.9
     steps:
       - attach_workspace:
-          at: /tmp/workspace
+          at: /go/src/github.com/Mel-GitHub/redis-golang-app/workspace
       - setup_remote_docker
       - run:
           name: Container Scan Testing
