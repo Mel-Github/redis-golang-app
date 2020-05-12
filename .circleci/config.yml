@@ -55,35 +55,13 @@ jobs:
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
            ## docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
             docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_SHA1}
-          
 
-  # push:
-  #   filters:
-  #     branches:
-  #       only:
-  #         - circleci-project-setup
-  #   docker:
-  #     # specify the version
-  #     - image: circleci/golang:1.9
+            docker save -o workspace/docker_storage ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_SHA1}
+      - persist_to_workspace:
+          root: workspace
+          path:
+            - docker_storage     
 
-  #   #### TEMPLATE_NOTE: go expects specific checkout path representing url
-  #   #### expecting it in the form of
-  #   ####   /go/src/github.com/circleci/go-tool
-  #   ####   /go/src/bitbucket.org/circleci/go-tool
-  #   working_directory: /go/src/github.com/Mel-GitHub/redis-golang-app
-  #   environment:
-  #     DOCKER_USER: melcheng  
-  #     STABLE_RELEASE: v0.1
-  #     RELEASE_BRANCH: release-candidate
-  #   steps:
-  #     - checkout
-  #     - setup_remote_docker
-  #     - run:
-  #         name: Push Docker image
-  #         command: |
-  #           docker images ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
-  #           echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-  #           docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
   test:
     docker:
       # specify the version
@@ -105,12 +83,33 @@ jobs:
   container-scan:
     docker:
       # specify the version
-      - image: alpine:3.4
+      - image: circleci/golang:1.9
     steps:
+      - attach_workspace:
+          at: /tmp/workspace
       - run:
           name: Container Scan Testing
           command: |
-            echo "Invoke container scanning here"
+            docker load -i /tmp/workspace/docker_storage
+            docker images 
+  
+      #     name: Install trivy
+      #     command: |
+      #       apk add --update-cache --upgrade curl rpm
+      #       VERSION=$(
+      #           curl --silent "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | \
+      #           grep '"tag_name":' | \
+      #           sed -E 's/.*"v([^"]+)".*/\1/'
+      #       )
+
+      #       wget https://github.com/aquasecurity/trivy/releases/download/v${VERSION}/trivy_${VERSION}_Linux-64bit.tar.gz
+      #       tar zxvf trivy_${VERSION}_Linux-64bit.tar.gz
+      #       mv trivy /usr/local/bin
+      # - run:
+      #     name: Scan the local image with trivy
+      #     command: trivy --exit-code 0 --no-progress trivy-ci-test:${CIRCLE_SHA1}
+  
+
   git_update:
     filters:
       branches:
