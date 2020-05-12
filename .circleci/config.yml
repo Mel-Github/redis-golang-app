@@ -59,7 +59,7 @@ jobs:
            ## docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_BUILD_NUM}
             docker push ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_SHA1}
 
-            docker save -o workspace/docker_storage/${STABLE_RELEASE}.${CIRCLE_SHA1}.tar ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_SHA1}
+            docker save -o workspace/docker_storage/${CIRCLE_SHA1}.tar ${DOCKER_USER}/${CIRCLE_PROJECT_REPONAME}:${STABLE_RELEASE}.${CIRCLE_SHA1}
       - persist_to_workspace:
           root: workspace
           paths:
@@ -94,7 +94,8 @@ jobs:
       - run:
           name: Container Scan Testing
           command: |
-            docker load -i /go/src/github.com/Mel-GitHub/redis-golang-app/workspace/docker_storage/${STABLE_RELEASE}.${CIRCLE_SHA1}.tar
+            ls -al
+            docker load -i /go/src/github.com/Mel-GitHub/redis-golang-app/workspace/docker_storage/${CIRCLE_SHA1}.tar
             docker images 
   
       #     name: Install trivy
